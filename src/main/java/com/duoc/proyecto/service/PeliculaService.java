@@ -10,18 +10,19 @@ public class PeliculaService {
 
     private final PeliculaRepository repository;
 
-    // Inyectamos el repositorio que conecta con Oracle
     public PeliculaService(PeliculaRepository repository) {
         this.repository = repository;
     }
-
 
     public List<Pelicula> obtenerTodas() {
         return repository.findAll();
     }
 
-
     public Pelicula obtenerPorId(Long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    public Pelicula guardar(Pelicula p) {
+        return repository.save(p);
     }
 }

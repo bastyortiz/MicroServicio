@@ -1,27 +1,42 @@
 package com.duoc.proyecto.controller;
 
 import com.duoc.proyecto.model.Pelicula;
-import com.duoc.proyecto.repository.PeliculaRepository;
+import com.duoc.proyecto.service.PeliculaService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/peliculas") 
+@RequestMapping("/peliculas")
 public class PeliculaController {
 
-    private final PeliculaRepository repository;
+    private final PeliculaService peliculaService;
 
-    public PeliculaController(PeliculaRepository repository) {
-        this.repository = repository;
+    public PeliculaController(PeliculaService peliculaService) {
+        this.peliculaService = peliculaService;
     }
 
-    @GetMapping 
+    @GetMapping
     public List<Pelicula> getAll() {
-        return repository.findAll();
+        return peliculaService.obtenerTodas();
     }
 
-    @GetMapping("/{id}") 
+    @GetMapping("/{id}")
     public Pelicula getById(@PathVariable Long id) {
-        return repository.findById(id).orElse(null);
+        return peliculaService.obtenerPorId(id);
+    }
+
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> crear(@RequestBody Pelicula pelicula) {
+        Pelicula peliculaGuardada = peliculaService.guardar(pelicula);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("mensaje", "Pelicula creada correctamente");
+        response.put("pelicula", peliculaGuardada);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
